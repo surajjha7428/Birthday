@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy Birthday!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #b3001b;
+    --paper: #fbf3e4;
+    --ink: #8c1c2b;
+    --script: "Great Vibes", cursive;
+    --hand: "Caveat", cursive;
+    --serif: "Playfair Display", serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background:
+      repeating-linear-gradient(90deg, rgba(0,0,0,.035) 0 2px, transparent 2px 6px),
+      var(--red);
+    color: #fff;
+    font-family: var(--hand);
+    font-size: 1.35rem;
+    overflow-x: hidden;
+  }
+  section { min-height: 100vh; padding: 4rem 1.2rem; display: grid; place-items: center; }
+  img { display: block; width: 100%; object-fit: cover; background: #e8b4b8; }
+
+  /* ---------- 1. HERO / ENVELOPE ---------- */
+  .hero { text-align: center; align-content: center; gap: 1rem; }
+  #open { display: none; }
+  .stage { display: flex; align-items: center; justify-content: center; gap: clamp(.5rem, 3vw, 2rem); }
+  .sticker { font-size: clamp(3rem, 12vw, 6rem); filter: drop-shadow(0 6px 8px rgba(0,0,0,.35)); }
+  .camera  { transform: rotate(-8deg); }
+  .bouquet { transform: rotate(8deg); }
+
+  .envelope { position: relative; display: block; width: min(300px, 55vw); aspect-ratio: 3/2; cursor: pointer; }
+  .envelope > span { position: absolute; display: block; }
+  .env-back  { inset: 0; background: #e6d7bb; border-radius: 6px; box-shadow: 0 12px 24px rgba(0,0,0,.4); }
+  .env-card  {
+    left: 7%; right: 7%; top: 6%; height: 88%; z-index: 1;
+    background: #fff; display: grid; place-items: center;
+    font-family: var(--script); color: #333; font-size: clamp(1.6rem, 6vw, 2.4rem);
+    transition: transform .9s .45s ease;
+  }
+  .env-front {
+    inset: 0; z-index: 2; background: #f3e8d2; border-radius: 6px;
+    clip-path: polygon(0 0, 50% 58%, 100% 0, 100% 100%, 0 100%);
+  }
+  .env-flap {
+    left: 0; right: 0; top: 0; height: 58%; z-index: 3; background: #ead9bb;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top; transition: transform .6s ease, z-index 0s .3s;
+  }
+  #open:checked ~ .stage .env-flap { transform: rotateX(180deg); z-index: 0; }
+  #open:checked ~ .stage .env-card { transform: translateY(-65%); }
+
+  .click-me { cursor: pointer; font-size: 1.5rem; margin-top: 1rem; display: inline-block; animation: bob 1.4s ease-in-out infinite; }
+  #open:checked ~ .click-me { display: none; }
+  .scroll-hint { opacity: 0; transition: opacity 1s 1.2s; }
+  #open:checked ~ .scroll-hint { opacity: .9; }
+  @keyframes bob { 50% { transform: translateY(-6px); } }
+
+  /* ---------- 2. NOTEBOOK ---------- */
+  .notebook {
+    position: relative; display: grid; grid-template-columns: 1fr 1fr;
+    width: min(820px, 100%); background: var(--paper); color: var(--ink);
+    border-radius: 10px; box-shadow: 0 20px 40px rgba(0,0,0,.45);
+  }
+  .notebook::before { /* binder rings */
+    content: ""; position: absolute; left: 50%; top: 8%; bottom: 8%; width: 24px; transform: translateX(-50%); z-index: 2;
+    background: radial-gradient(circle, #777 0 4px, #e3e3e3 5px 8px, transparent 9px) 50% 0 / 24px 33.33% repeat-y;
+  }
+  .page { padding: 2.2rem 2rem; min-height: 360px; display: grid; align-content: center; justify-items: center; gap: 1rem; }
+  .page.left { text-align: center; }
+  .age { font-family: var(--serif); font-size: clamp(4rem, 14vw, 7rem); line-height: 1; }
+  .age small { font-size: .35em; }
+  .page p { font-size: 1.25rem; line-height: 1.3; }
+
+  /* ---------- POLAROID ---------- */
+  .polaroid {
+    position: relative; background: #fff; padding: 10px 10px 36px; width: min(260px, 80%);
+    box-shadow: 0 8px 18px rgba(0,0,0,.35); transform: rotate(var(--r, 3deg));
+  }
+  .polaroid img { aspect-ratio: 1; }
+  .polaroid::before { /* tape */
+    content: ""; position: absolute; top: -12px; left: 50%; width: 80px; height: 24px; transform: translateX(-50%) rotate(-4deg);
+    background: rgba(240, 220, 160, .75);
+  }
+  .polaroid span { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; color: #555; font-size: 1.1rem; }
+
+  /* ---------- 3. STORY ---------- */
+  .story { gap: 4rem; align-content: center; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; max-width: 860px; }
+  .row.flip .polaroid { order: 2; }
+  .row p { line-height: 1.3; }
+
+  /* ---------- 4. FILM STRIP ---------- */
+  .film-wrap { position: relative; width: min(900px, 100%); }
+  .film {
+    position: relative; display: flex; gap: 8px; padding: 30px 12px; background: #0e0e0e;
+    transform: rotate(-3deg); box-shadow: 0 14px 28px rgba(0,0,0,.5);
+  }
+  .film::before, .film::after {
+    content: ""; position: absolute; left: 0; right: 0; height: 10px;
+    background: repeating-linear-gradient(90deg, #f5f5f5 0 12px, transparent 12px 24px);
+  }
+  .film::before { top: 10px; } .film::after { bottom: 10px; }
+  .film img { flex: 1; min-width: 0; aspect-ratio: 3/4; filter: grayscale(.4) contrast(1.1); }
+  .film-wrap .star { position: absolute; right: -10px; bottom: -14px; font-size: 3rem; transform: rotate(15deg); }
+  .film-wrap .bow  { position: absolute; left: -6px; top: -26px; font-size: 3rem; }
+
+  /* ---------- 5. SCALLOPED NOTE ---------- */
+  .final { position: relative; width: min(820px, 100%); display: grid; grid-template-columns: 1.3fr 1fr; align-items: center; gap: 1rem; }
+  .note {
+    position: relative; padding: 2.4rem 2rem 3.6rem; color: var(--ink); line-height: 1.3;
+    background:
+      radial-gradient(circle at 7px 0,    #0000 5px, var(--paper) 5.5px) 0 0    / 14px 14px repeat-x,
+      radial-gradient(circle at 7px 14px, #0000 5px, var(--paper) 5.5px) 0 100% / 14px 14px repeat-x,
+      radial-gradient(circle at 0 7px,    #0000 5px, var(--paper) 5.5px) 0 0    / 14px 14px repeat-y,
+      radial-gradient(circle at 14px 7px, #0000 5px, var(--paper) 5.5px) 100% 0 / 14px 14px repeat-y,
+      linear-gradient(var(--paper), var(--paper)) 50% 50% / calc(100% - 14px) calc(100% - 14px) no-repeat;
+    filter: drop-shadow(0 10px 14px rgba(0,0,0,.35));
+  }
+  .note .tiny { position: absolute; font-size: 2.6rem; }
+  .note .bears { left: -14px; bottom: -14px; }
+  .note .tape  { left: 40%; bottom: -18px; transform: rotate(-6deg); }
+  .final .polaroid { justify-self: center; --r: 6deg; }
+
+  footer { text-align: center; padding: 2rem 1rem 3rem; opacity: .85; }
+
+  /* ---------- SCROLL REVEAL (JS adds .js) ---------- */
+  .js .reveal { opacity: 0; transform: translateY(40px); transition: opacity .9s, transform .9s; }
+  .js .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width: 640px) {
+    .notebook, .row, .final { grid-template-columns: 1fr; }
+    .notebook::before { display: none; }
+    .row.flip .polaroid { order: 0; }
+    .row { text-align: center; justify-items: center; }
+    .film { padding: 28px 8px; gap: 5px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. ENVELOPE -->
+<section class="hero">
+  <input type="checkbox" id="open">
+  <div class="stage">
+    <span class="sticker camera">📷</span>
+    <label for="open" class="envelope">
+      <span class="env-back"></span>
+      <span class="env-card">Happy Birthday <br/> Cutie </span>
+      <span class="env-front"></span>
+      <span class="env-flap"></span>
+    </label>
+    <span class="sticker bouquet">💐</span>
+  </div>
+  <label for="open" class="click-me">click me ♡</label>
+  
+  <p class="scroll-hint">scroll down ↓</p>
+</section>
+
+<!-- 2. NOTEBOOK -->
+<section>
+  <div class="notebook reveal">
+    <div class="page left">
+      <div class="age">23<small>🧁</small></div>
+      <p>Happy Birthday, Sona!
+We meet every year, but this year felt a little different.<br>
+They say October is a month of new beginnings.<br>
+For us, it's the month we meet every year.<br>
+I think the October theory is real,<br>
+and this October felt a little different.</p>
+    </div>
+    <div class="page">
+      <figure class="polaroid" style="--r:2deg">
+        <img src="/1.jpg" alt="">
+        <span>favorite person</span>
+      </figure>
+      <p style="font-size:1rem">be happy ♡</p>
+      
+    </div>
+  </div>
+</section>
+
+<!-- 3. STORY -->
+<section class="story">
+  <div class="row reveal">
+    <figure class="polaroid" style="--r:-4deg"><img src="2.jpeg" alt=""></figure>
+    <p>On your special day, I wish you a year full of happiness, success and all the little things that make you smile. May every dream you’re chasing come true, and may you always be surrounded by people who love you..</p>
+  </div>
+  <div class="row flip reveal">
+    <figure class="polaroid" style="--r:4deg"><img src="3.jpeg" alt=""></figure>
+    <p>If I could give you one gift today, it would be the ability to see yourself the way I see you. You’re kind, funny and so easy to love, and I hope you feel that every single day..</p>
+  </div>
+</section>
+
+<!-- 4. FILM STRIP -->
+<section>
+  <div class="film-wrap reveal">
+    <span class="bow">🎀</span>
+    <div class="film">
+      <img src="4.jpeg" alt=""><img src="5.jpeg" alt=""><img src="6.jpeg" alt="">
+      <img src="7.jpeg" alt=""><img src="8.jpeg" alt="">
+    </div>
+    <span class="star">⭐</span>
+  </div>
+</section>
+
+<!-- 5. FINAL NOTE -->
+<section>
+  <div class="final reveal">
+    <div class="note">
+      <p>Any perfect final note goes here. Life Me Chill kar itna stress mat liya  ♡</p>
+      <span class="tiny bears">🧸</span>
+      <span class="tiny tape">📼</span>
+    </div>
+    <figure class="polaroid"><img src="/1.jpg" alt=""></figure>
+  </div>
+</section>
+
+<footer>made with ♡ for you</footer>
+
+<script>
+  // only JS: fade sections in as you scroll
+  document.documentElement.classList.add('js');
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: .2 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
